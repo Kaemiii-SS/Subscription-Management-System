@@ -57,6 +57,10 @@ public class PlanService {
         String periodFilter = (billingPeriod == null || billingPeriod.isBlank())
                 ? null : billingPeriod.trim().toUpperCase();
 
+        if (searchFilter == null && periodFilter == null) {
+            return planRepository.findByActiveTrue(pageable).map(this::mapToResponse);
+        }
+
         return planRepository.searchActivePlans(
                         searchFilter,
                         periodFilter,
@@ -100,7 +104,7 @@ public class PlanService {
     private void validateDates(PlanRequest request) {
 
         if (request.availableTo() != null &&
-                request.availableTo().isBefore(request.availableFrom())) {
+                request.availableTo().isBefore(request.effectiveAvailableFrom())) {
             throw new IllegalArgumentException(
                     "Available-to date cannot be before available-from date"
             );
@@ -111,14 +115,14 @@ public class PlanService {
 
         plan.setName(request.name().trim());
         plan.setPrice(request.price());
-        plan.setBillingPeriod(request.billingPeriod());
-        plan.setMinQuantity(request.minQuantity());
-        plan.setAvailableFrom(request.availableFrom());
+        plan.setBillingPeriod(request.normalizedBillingPeriod());
+        plan.setMinQuantity(request.effectiveMinQuantity());
+        plan.setAvailableFrom(request.effectiveAvailableFrom());
         plan.setAvailableTo(request.availableTo());
-        plan.setAutoClose(request.autoClose());
-        plan.setClosable(request.closable());
-        plan.setPausable(request.pausable());
-        plan.setRenewable(request.renewable());
+        plan.setAutoClose(request.effectiveAutoClose());
+        plan.setClosable(request.effectiveClosable());
+        plan.setPausable(request.effectivePausable());
+        plan.setRenewable(request.effectiveRenewable());
     }
 
     private PlanResponse mapToResponse(Plan plan) {

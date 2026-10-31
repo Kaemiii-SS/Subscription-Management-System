@@ -17,10 +17,12 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
 
+    Page<Plan> findByActiveTrue(Pageable pageable);
+
     @Query("""
             SELECT p FROM Plan p
             WHERE p.active = true
-            AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')))
+            AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))
             AND (:period IS NULL OR p.billingPeriod = :period)
             """)
     Page<Plan> searchActivePlans(

@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://ep-rough-heart-b55v10rb-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require}
+    username: ${DB_USERNAME:neondb_owner}
+    password: ${DB_PASSWORD:npg_fvwUIb24YHPB}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+  mail:
+    host: localhost
+    port: 587
+    username: ${MAIL_USERNAME:admin@brightloop.com}
+    password: ${MAIL_PASSWORD:secret}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:uVM+upzptqA2QVBcnrTFd5xfnfG/+15RXuRLi3uu8qI=}
+    expiration: 86400000
+  admin:
+    name: ${ADMIN_NAME:admin}
+    email: ${ADMIN_EMAIL:admin@brightloop.com}
+    password: ${ADMIN_PASSWORD:Admin@123}
+  password-reset:
+    url: ${RESET_PASSWORD_URL:http://localhost:3000/reset-password}

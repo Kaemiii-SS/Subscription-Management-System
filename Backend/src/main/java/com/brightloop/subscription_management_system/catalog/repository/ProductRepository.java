@@ -16,12 +16,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     boolean existsByNameIgnoreCase(String name);
 
+    Page<Product> findByActiveTrue(Pageable pageable);
+
     // Search and filter products
     @Query("""
             SELECT p FROM Product p
             WHERE p.active = true
-            AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')))
-            AND (:type IS NULL OR LOWER(p.type) = LOWER(:type))
+            AND (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))
+            AND (:type IS NULL OR LOWER(p.type) = LOWER(CAST(:type AS string)))
             """)
     Page<Product> searchActiveProducts(
             @Param("search") String search,

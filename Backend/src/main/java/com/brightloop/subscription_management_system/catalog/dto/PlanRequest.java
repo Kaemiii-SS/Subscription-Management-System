@@ -15,29 +15,69 @@ public record PlanRequest(
         @Digits(integer = 12, fraction = 2)
         BigDecimal price,
 
-        @NotBlank
-        @Pattern(regexp = "DAILY|WEEKLY|MONTHLY|YEARLY")
         String billingPeriod,
 
-        @NotNull
-        @Min(1)
         Integer minQuantity,
 
-        @NotNull
+        Integer minSeats,
+
         LocalDate availableFrom,
 
         LocalDate availableTo,
 
-        @NotNull
         Boolean autoClose,
 
-        @NotNull
         Boolean closable,
 
-        @NotNull
+        Boolean canCloseEarly,
+
         Boolean pausable,
 
-        @NotNull
-        Boolean renewable
+        Boolean canPause,
 
-) {}
+        Boolean renewable,
+
+        Boolean canRenew,
+
+        Boolean autoInvoice
+
+) {
+    public String normalizedBillingPeriod() {
+        if (billingPeriod == null || billingPeriod.isBlank()) return "MONTHLY";
+        return billingPeriod.trim().toUpperCase();
+    }
+
+    public Integer effectiveMinQuantity() {
+        if (minQuantity != null) return minQuantity;
+        if (minSeats != null) return minSeats;
+        return 1;
+    }
+
+    public LocalDate effectiveAvailableFrom() {
+        if (availableFrom != null) return availableFrom;
+        return LocalDate.now();
+    }
+
+    public Boolean effectiveAutoClose() {
+        if (autoClose != null) return autoClose;
+        return false;
+    }
+
+    public Boolean effectiveClosable() {
+        if (closable != null) return closable;
+        if (canCloseEarly != null) return canCloseEarly;
+        return true;
+    }
+
+    public Boolean effectivePausable() {
+        if (pausable != null) return pausable;
+        if (canPause != null) return canPause;
+        return true;
+    }
+
+    public Boolean effectiveRenewable() {
+        if (renewable != null) return renewable;
+        if (canRenew != null) return canRenew;
+        return true;
+    }
+}

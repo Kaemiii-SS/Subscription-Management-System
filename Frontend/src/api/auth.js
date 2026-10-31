@@ -1,7 +1,7 @@
 import apiClient from './client';
 import { STORAGE_KEYS, getStoredData, setStoredData } from '../lib/storage';
 
-const IS_MOCK_FALLBACK = true;
+const IS_MOCK_FALLBACK = false;
 
 // Password validation rule per spec:
 // > 8 chars, 1 uppercase, 1 lowercase, 1 special character
@@ -23,6 +23,12 @@ export const authApi = {
   async login({ email, password }) {
     if (!IS_MOCK_FALLBACK) {
       const { data } = await apiClient.post('/auth/login', { email, password });
+      if (data.token) {
+        localStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
+      }
+      if (data.user) {
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+      }
       return data;
     }
 
@@ -47,6 +53,12 @@ export const authApi = {
   async signup({ name, email, password, companyName }) {
     if (!IS_MOCK_FALLBACK) {
       const { data } = await apiClient.post('/auth/signup', { name, email, password, companyName });
+      if (data.token) {
+        localStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
+      }
+      if (data.user) {
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(data.user));
+      }
       return data;
     }
 

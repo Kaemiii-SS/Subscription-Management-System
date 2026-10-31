@@ -1,13 +1,13 @@
 import apiClient from './client';
 import { STORAGE_KEYS, getStoredData, setStoredData } from '../lib/storage';
 
-const IS_MOCK = true;
+const IS_MOCK = false;
 
 export const staffApi = {
   async getAll() {
     if (!IS_MOCK) {
       const { data } = await apiClient.get('/staff');
-      return data;
+      return Array.isArray(data) ? data : (data.items || data.content || []);
     }
     await new Promise((res) => setTimeout(res, 200));
     const users = getStoredData(STORAGE_KEYS.USERS);

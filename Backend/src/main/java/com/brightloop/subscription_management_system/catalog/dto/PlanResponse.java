@@ -18,4 +18,20 @@ public record PlanResponse(
         Boolean renewable,
         Boolean active
 
-) {}
+) {
+    public Integer getMinSeats() {
+        return minQuantity;
+    }
+
+    public Boolean getCanPause() {
+        return pausable;
+    }
+
+    public Boolean getCanRenew() {
+        return renewable;
+    }
+
+    public Boolean getCanCloseEarly() {
+        return closable;
+    }
+}

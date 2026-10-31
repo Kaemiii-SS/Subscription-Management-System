@@ -16,15 +16,16 @@ public record CreateStaffRequest(
         @Size(max = 255)
         String email,
 
-        @NotBlank
-        @Size(min = 9, max = 72)
-        @Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).+$",
-                message = "Password must contain uppercase, lowercase, number and special character"
-        )
         String password,
 
         @Size(max = 20)
-        String phone
+        String phone,
 
-) {}
+        String department
+
+) {
+    public String effectivePassword() {
+        if (password != null && !password.isBlank()) return password;
+        return "Password123!";
+    }
+}

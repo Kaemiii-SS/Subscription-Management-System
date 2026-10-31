@@ -2,7 +2,7 @@ import apiClient from './client';
 import { STORAGE_KEYS, getStoredData, setStoredData } from '../lib/storage';
 import { INVOICE_STATUS } from '../constants/status';
 
-const IS_MOCK = true;
+const IS_MOCK = false;
 
 export const paymentsApi = {
   async getAll({ page = 1, size = 10, search = '' } = {}) {
@@ -51,7 +51,7 @@ export const paymentsApi = {
         note,
         reference,
       });
-      return data;
+      return { payment: data.payment || data, invoice: data.invoice, ...data };
     }
     await new Promise((res) => setTimeout(res, 350));
     const invoices = getStoredData(STORAGE_KEYS.INVOICES);

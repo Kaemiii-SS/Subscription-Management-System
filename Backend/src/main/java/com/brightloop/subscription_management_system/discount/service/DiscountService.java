@@ -98,6 +98,13 @@ public class DiscountService {
         }
     }
 
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void revertSlot(Long discountId) {
+        if (discountId != null) {
+            discountRepository.revertSlot(discountId);
+        }
+    }
+
     // ---------- helpers ----------
 
     private Discount find(Long id) {

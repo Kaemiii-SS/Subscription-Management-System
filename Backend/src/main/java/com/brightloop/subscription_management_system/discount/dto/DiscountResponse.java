@@ -23,4 +23,15 @@ public record DiscountResponse(
         boolean active,
         boolean expired
 ) {
+    public String getCode() {
+        return name;
+    }
+
+    public Integer getMinSeats() {
+        return minQuantity != null ? minQuantity : 1;
+    }
+
+    public Long getTargetProductId() {
+        return productId;
+    }
 }

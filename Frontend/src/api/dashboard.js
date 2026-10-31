@@ -3,7 +3,7 @@ import { STORAGE_KEYS, getStoredData } from '../lib/storage';
 import { isInvoiceOverdue, getDaysOverdue } from '../lib/utils';
 import { SUBSCRIPTION_STATUS, INVOICE_STATUS } from '../constants/status';
 
-const IS_MOCK = true;
+const IS_MOCK = false;
 
 export const dashboardApi = {
   async getMetrics({ customerId = '', planId = '', dateRange = '' } = {}) {
@@ -72,7 +72,7 @@ export const dashboardApi = {
   async getOverdueInvoices() {
     if (!IS_MOCK) {
       const { data } = await apiClient.get('/dashboard/overdue-invoices');
-      return data;
+      return Array.isArray(data) ? data : (data.items || data.content || []);
     }
     await new Promise((res) => setTimeout(res, 200));
     const invoices = getStoredData(STORAGE_KEYS.INVOICES);

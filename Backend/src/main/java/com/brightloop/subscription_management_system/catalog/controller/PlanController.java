@@ -7,11 +7,12 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import com.brightloop.subscription_management_system.common.dto.PageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin/plans")
+@RequestMapping({"/api/admin/plans", "/api/v1/plans", "/api/plans"})
 public class PlanController {
 
     private final PlanService planService;
@@ -29,12 +30,14 @@ public class PlanController {
     }
 
     @GetMapping
-    public Page<PlanResponse> getPlans(
+    public PageResponse<PlanResponse> getPlans(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String billingPeriod,
+            @RequestParam(required = false) String period,
             @PageableDefault(size = 10, sort = "name") Pageable pageable
     ) {
-        return planService.getPlans(search, billingPeriod, pageable);
+        String effectivePeriod = billingPeriod != null ? billingPeriod : period;
+        return PageResponse.of(planService.getPlans(search, effectivePeriod, pageable));
     }
 
     @GetMapping("/{id}")

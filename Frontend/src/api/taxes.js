@@ -1,13 +1,13 @@
 import apiClient from './client';
 import { STORAGE_KEYS, getStoredData, setStoredData } from '../lib/storage';
 
-const IS_MOCK = true;
+const IS_MOCK = false;
 
 export const taxesApi = {
   async getAll() {
     if (!IS_MOCK) {
       const { data } = await apiClient.get('/taxes');
-      return data;
+      return Array.isArray(data) ? data : (data.items || data.content || []);
     }
     await new Promise((res) => setTimeout(res, 200));
     return getStoredData(STORAGE_KEYS.TAXES);

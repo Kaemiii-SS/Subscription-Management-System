@@ -1,7 +1,7 @@
 import apiClient from './client';
 import { STORAGE_KEYS, getStoredData, setStoredData } from '../lib/storage';
 
-const IS_MOCK = true;
+const IS_MOCK = false;
 
 export const discountsApi = {
   async getAll({ page = 1, size = 10, search = '' } = {}) {

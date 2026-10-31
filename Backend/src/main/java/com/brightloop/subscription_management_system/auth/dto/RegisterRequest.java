@@ -18,14 +18,12 @@ public record RegisterRequest(
         String email,
 
         @NotBlank
-        @Size(min = 9, max = 72)
-        @Pattern(
-                regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z0-9]).+$",
-                message = "Password must contain uppercase, lowercase, number and special character"
-        )
+        @Size(min = 6, max = 72)
         String password,
 
         @Size(max = 20)
-        String phone
+        String phone,
+
+        String companyName
 
 ) {}

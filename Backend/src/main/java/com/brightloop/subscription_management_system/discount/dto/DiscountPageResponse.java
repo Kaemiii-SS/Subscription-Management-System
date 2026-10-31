@@ -9,4 +9,15 @@ public record DiscountPageResponse(
         long totalItems,
         int totalPages
 ) {
+    public long getTotal() {
+        return totalItems;
+    }
+
+    public List<DiscountResponse> getContent() {
+        return items;
+    }
+
+    public long getTotalElements() {
+        return totalItems;
+    }
 }

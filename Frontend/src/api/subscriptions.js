@@ -2,7 +2,7 @@ import apiClient from './client';
 import { STORAGE_KEYS, getStoredData, setStoredData } from '../lib/storage';
 import { SUBSCRIPTION_STATUS } from '../constants/status';
 
-const IS_MOCK = true;
+const IS_MOCK = false;
 
 export const subscriptionsApi = {
   async getAll({ page = 1, size = 10, search = '', status = '', customerId = '', planId = '' } = {}) {

@@ -61,6 +61,10 @@ public class ProductService {
         String typeFilter = (type == null || type.isBlank())
                 ? null : type.trim();
 
+        if (searchFilter == null && typeFilter == null) {
+            return productRepository.findByActiveTrue(pageable).map(this::mapToResponse);
+        }
+
         return productRepository.searchActiveProducts(
                         searchFilter,
                         typeFilter,
@@ -154,17 +158,20 @@ public class ProductService {
         product.setType(request.type().trim());
         product.setSalesPrice(request.salesPrice());
         product.setCostPrice(request.costPrice());
-        product.setNotes(request.notes());
+        product.setNotes(request.effectiveNotes());
 
-        if (request.taxId() == null) {
-            product.setTax(null);
-        } else {
+        if (request.taxId() != null) {
             Tax tax = taxRepository.findByIdAndActiveTrue(request.taxId())
-                    .orElseThrow(() ->
-                            new IllegalArgumentException("Active tax not found")
-                    );
-
+                    .orElse(null);
             product.setTax(tax);
+        } else if (request.taxPercent() != null) {
+            Tax tax = taxRepository.findAll().stream()
+                    .filter(t -> t.getActive() && t.getPercent().compareTo(request.taxPercent()) == 0)
+                    .findFirst()
+                    .orElse(null);
+            product.setTax(tax);
+        } else {
+            product.setTax(null);
         }
     }
 

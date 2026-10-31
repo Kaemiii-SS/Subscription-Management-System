@@ -30,4 +30,12 @@ public interface DiscountRepository extends JpaRepository<Discount, Long>, JpaSp
               and (d.usageLimit is null or d.usedCount < d.usageLimit)
             """)
     int tryUseSlot(@Param("id") Long id);
+
+    // Revert slot when invoice is cancelled
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("""
+            update Discount d set d.usedCount = d.usedCount - 1
+            where d.id = :id and d.usedCount > 0
+            """)
+    int revertSlot(@Param("id") Long id);
 }

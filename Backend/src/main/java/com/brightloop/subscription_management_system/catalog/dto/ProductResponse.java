@@ -17,4 +17,8 @@ public record ProductResponse(
         Boolean active,
         List<ProductVariantResponse> variants
 
-) {}
+) {
+    public String getDescription() {
+        return notes;
+    }
+}

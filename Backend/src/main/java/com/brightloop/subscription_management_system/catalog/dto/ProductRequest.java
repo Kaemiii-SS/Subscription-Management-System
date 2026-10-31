@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record ProductRequest(
 
@@ -23,13 +24,27 @@ public record ProductRequest(
         @Digits(integer = 12, fraction = 2)
         BigDecimal salesPrice,
 
-        @NotNull
         @DecimalMin("0.00")
         @Digits(integer = 12, fraction = 2)
         BigDecimal costPrice,
 
         Long taxId,
 
-        String notes
+        BigDecimal taxPercent,
 
-) {}
+        String notes,
+
+        String description,
+
+        List<ProductVariantRequest> variants
+
+) {
+    public BigDecimal costPrice() {
+        return costPrice != null ? costPrice : BigDecimal.ZERO;
+    }
+
+    public String effectiveNotes() {
+        if (notes != null && !notes.isBlank()) return notes;
+        return description;
+    }
+}

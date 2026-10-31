@@ -7,11 +7,12 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import com.brightloop.subscription_management_system.common.dto.PageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin/taxes")
+@RequestMapping({"/api/admin/taxes", "/api/v1/taxes", "/api/taxes"})
 public class TaxController {
 
     private final TaxService taxService;
@@ -27,10 +28,10 @@ public class TaxController {
     }
 
     @GetMapping
-    public Page<TaxResponse> getAllTaxes(
-            @PageableDefault(size = 10, sort = "name") Pageable pageable
+    public PageResponse<TaxResponse> getAllTaxes(
+            @PageableDefault(size = 50, sort = "name") Pageable pageable
     ) {
-        return taxService.getAllTaxes(pageable);
+        return PageResponse.of(taxService.getAllTaxes(pageable));
     }
 
     @PutMapping("/{id}")

@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
     const storedToken = localStorage.getItem(STORAGE_KEYS.TOKEN);
     const storedUser = localStorage.getItem(STORAGE_KEYS.USER);
 
-    if (storedToken && storedUser) {
+    if (storedToken && storedUser && !storedToken.startsWith('jwt_mock_')) {
       try {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
@@ -24,16 +24,8 @@ export function AuthProvider({ children }) {
         localStorage.removeItem(STORAGE_KEYS.USER);
       }
     } else {
-      // Default initial mock login for smooth local demo testing: Admin
-      const users = getStoredData(STORAGE_KEYS.USERS);
-      const defaultAdmin = users.find((u) => u.role === ROLES.ADMIN) || users[0];
-      if (defaultAdmin) {
-        const mockToken = `jwt_mock_admin_${defaultAdmin.id}`;
-        localStorage.setItem(STORAGE_KEYS.TOKEN, mockToken);
-        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(defaultAdmin));
-        setToken(mockToken);
-        setUser(defaultAdmin);
-      }
+      localStorage.removeItem(STORAGE_KEYS.TOKEN);
+      localStorage.removeItem(STORAGE_KEYS.USER);
     }
     setIsLoading(false);
   }, []);
@@ -59,16 +51,23 @@ export function AuthProvider({ children }) {
   };
 
   // Helper for fast switcher during demo (Admin / Staff / Customer)
-  const switchDemoRole = (role) => {
-    const users = getStoredData(STORAGE_KEYS.USERS);
-    const targetUser = users.find((u) => u.role === role);
-    if (targetUser) {
-      const mockToken = `jwt_mock_${role}_${targetUser.id}`;
-      localStorage.setItem(STORAGE_KEYS.TOKEN, mockToken);
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(targetUser));
-      setToken(mockToken);
-      setUser(targetUser);
-      return targetUser;
+  const switchDemoRole = async (role) => {
+    let email = 'admin@brightloop.com';
+    if (role === ROLES.STAFF) email = 'staff@brightloop.com';
+    if (role === ROLES.CUSTOMER) email = 'customer@acme.com';
+    try {
+      const data = await authApi.login({ email, password: 'Password123!' });
+      setToken(data.token);
+      setUser(data.user);
+      return data.user;
+    } catch (e) {
+      console.warn('Backend login switch failed, falling back to local user', e);
+      const users = getStoredData(STORAGE_KEYS.USERS);
+      const targetUser = users.find((u) => u.role === role);
+      if (targetUser) {
+        setUser(targetUser);
+        return targetUser;
+      }
     }
   };
 

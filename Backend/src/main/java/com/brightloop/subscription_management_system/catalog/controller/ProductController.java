@@ -7,10 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import com.brightloop.subscription_management_system.common.dto.PageResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin/products")
+@RequestMapping({"/api/admin/products", "/api/v1/products", "/api/products"})
 public class ProductController {
 
     private final ProductService productService;
@@ -28,12 +29,12 @@ public class ProductController {
     }
 
     @GetMapping
-    public Page<ProductResponse> getProducts(
+    public PageResponse<ProductResponse> getProducts(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String type,
             @PageableDefault(size = 10, sort = "name") Pageable pageable
     ) {
-        return productService.getProducts(search, type, pageable);
+        return PageResponse.of(productService.getProducts(search, type, pageable));
     }
 
     @GetMapping("/{id}")

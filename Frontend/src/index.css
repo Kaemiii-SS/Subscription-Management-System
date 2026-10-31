@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-base: #002222;
+  --accent: #9ec14c;
+  --accent-hover: #b4d95b;
+  --accent-soft: rgba(158, 193, 76, 0.22);
+  --surface: rgba(0, 24, 24, 0.78);
+  --surface-strong: rgba(0, 24, 24, 0.94);
+  --border: rgba(255, 255, 255, 0.20);
+  --text-primary: #ffffff;
+  --text-secondary: #ffffff;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+}
+
+@layer base {
+  body {
+    background-color: var(--bg-base);
+    color: #ffffff;
+    color-scheme: dark;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Universal high contrast text overrides to prevent fading */
+.text-textPrimary {
+  color: #ffffff !important;
+}
+.text-textSecondary {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+input, select, textarea {
+  color: #ffffff !important;
+}
+input::placeholder, textarea::placeholder {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+/* Fixed full-screen Vanta Background */
+#vanta-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--bg-base);
+  pointer-events: auto;
+}
+
+/* Reduced motion preference fallback to static dark gradient */
+@media (prefers-reduced-motion: reduce) {
+  #vanta-bg {
+    background: radial-gradient(circle at 50% 30%, #003838 0%, #002222 70%) !important;
+  }
+}
+
+/* Custom dark olive glass scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 20, 20, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(137, 150, 78, 0.35);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(137, 150, 78, 0.6);
+}
+
+/* Print styles for invoices */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  #vanta-bg {
+    display: none !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
